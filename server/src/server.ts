@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes';
+import emailRoutes from './routes/emailRoutes';
 
 // Load environment variables
 dotenv.config();
@@ -22,6 +24,10 @@ app.get('/', (req: Request, res: Response) => {
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({ status: 'UP' });
 });
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/emails', emailRoutes);
 
 // Start server
 app.listen(PORT, () => {

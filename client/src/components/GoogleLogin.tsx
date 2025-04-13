@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import GoogleIcon from '@mui/icons-material/Google';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useAuth } from '../contexts/AuthContext';
 
 declare global {
   interface Window {
@@ -13,23 +14,12 @@ declare global {
 
 const GoogleLogin: React.FC = () => {
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    // This will be replaced with actual implementation
-    const initializeGoogleAuth = () => {
-      console.log('Google Auth initialized');
-    };
-
-    initializeGoogleAuth();
-  }, []);
+  const { login } = useAuth();
 
   const handleGoogleLogin = () => {
     setLoading(true);
-    // This is a placeholder for the actual Google login implementation
-    setTimeout(() => {
-      console.log('Google login clicked');
-      setLoading(false);
-    }, 1000);
+    // Use the login function from our auth context
+    login();
   };
 
   return (
