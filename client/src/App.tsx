@@ -7,6 +7,8 @@ import Navbar from './components/Navbar';
 import DashboardPage from './pages/DashboardPage';
 import CompanyFormPage from './pages/CompanyFormPage';
 import EmailPreviewPage from './pages/EmailPreviewPage';
+import BulkEmailPage from './pages/BulkEmailPage';
+import BulkEmailPreviewPage from './pages/BulkEmailPreviewPage';
 
 // Create a clean, modern theme
 const theme = createTheme({
@@ -68,6 +70,8 @@ function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/create-email" element={<CompanyFormPage />} />
             <Route path="/email-preview" element={<EmailPreviewPage />} />
+            <Route path="/bulk-email" element={<BulkEmailPage />} />
+            <Route path="/bulk-email-preview" element={<BulkEmailPreviewPage />} />
             
             {/* Fallback route */}
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -7,6 +7,13 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import EmailIcon from '@mui/icons-material/Email';
 import { styled } from '@mui/material/styles';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import AddIcon from '@mui/icons-material/Add';
 
 // Styled components for a more modern look
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -33,10 +40,19 @@ const NavButton = styled(Button)(({ theme, active }: { theme: any, active: boole
 
 const Navbar = () => {
   const location = useLocation();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   
   // Check if a path is active
   const isActive = (path: string): boolean => {
     return location.pathname === path;
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -75,18 +91,44 @@ const Navbar = () => {
             Dashboard
           </Button>
           
-          <Button 
+          <Button
             color="primary"
-            variant="contained"
-            component={RouterLink} 
-            to="/create-email"
-            sx={{ 
-              ml: 2,
-              fontWeight: 500
-            }}
+            aria-controls="create-menu"
+            aria-haspopup="true"
+            onClick={handleMenuOpen}
+            endIcon={<ArrowDropDownIcon />}
+            sx={{ ml: 2 }}
           >
             Create Email
           </Button>
+          <Menu
+            id="create-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem 
+              component={RouterLink} 
+              to="/create-email"
+              onClick={handleMenuClose}
+            >
+              <ListItemIcon>
+                <AddIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Single Email</ListItemText>
+            </MenuItem>
+            <MenuItem 
+              component={RouterLink} 
+              to="/bulk-email"
+              onClick={handleMenuClose}
+            >
+              <ListItemIcon>
+                <CloudUploadIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Bulk Import</ListItemText>
+            </MenuItem>
+          </Menu>
         </Box>
       </Toolbar>
     </StyledAppBar>

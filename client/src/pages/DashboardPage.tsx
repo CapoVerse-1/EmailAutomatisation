@@ -24,6 +24,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EmailIcon from '@mui/icons-material/Email';
 import PeopleIcon from '@mui/icons-material/People';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
+import DescriptionIcon from '@mui/icons-material/Description';
 
 // Dummy email data for display
 const dummyEmails = [
@@ -96,15 +97,26 @@ const DashboardPage: React.FC = () => {
           <Typography variant="h4" component="h1" gutterBottom>
             Email Marketing Dashboard
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleCreateEmail}
-            size="large"
-          >
-            Create New Email
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={handleCreateEmail}
+              size="large"
+            >
+              Create New Email
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<EmailIcon />}
+              onClick={() => navigate('/bulk-email')}
+              size="large"
+            >
+              Bulk Email
+            </Button>
+          </Box>
         </Box>
 
         {/* Statistics Cards */}
