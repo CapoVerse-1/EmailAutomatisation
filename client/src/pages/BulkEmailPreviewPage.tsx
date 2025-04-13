@@ -16,7 +16,6 @@ import {
   DialogActions,
   Snackbar,
   Alert,
-  Grid,
   Card,
   CardContent,
   CardActions,
@@ -414,12 +413,12 @@ const BulkEmailPreviewPage: React.FC = () => {
         </Box>
         
         {/* Email list */}
-        <Grid container spacing={3}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
           {currentEmails.map((company, index) => {
             const originalIndex = processedCompanies.findIndex(c => c.recipientEmail === company.recipientEmail);
             
             return (
-              <Grid key={company.recipientEmail} item xs={12} md={6}>
+              <Box key={company.recipientEmail} sx={{ width: { xs: '100%', md: 'calc(50% - 12px)' } }}>
                 <Card 
                   elevation={0} 
                   sx={{ 
@@ -571,10 +570,10 @@ const BulkEmailPreviewPage: React.FC = () => {
                     </Box>
                   </CardActions>
                 </Card>
-              </Grid>
+              </Box>
             );
           })}
-        </Grid>
+        </Box>
         
         {/* Pagination */}
         {totalPages > 1 && (
