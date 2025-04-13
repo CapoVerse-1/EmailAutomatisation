@@ -4,87 +4,76 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Navbar from './components/Navbar';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import AuthCallbackPage from './pages/AuthCallbackPage';
 import DashboardPage from './pages/DashboardPage';
 import CompanyFormPage from './pages/CompanyFormPage';
 import EmailPreviewPage from './pages/EmailPreviewPage';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
 
-// Create theme
+// Create a clean, modern theme
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#2563eb', // Modern blue
     },
     secondary: {
-      main: '#dc004e',
+      main: '#ec4899', // Modern pink
+    },
+    background: {
+      default: '#f9fafb',
+      paper: '#ffffff',
+    },
+  },
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h4: {
+      fontWeight: 600,
+    },
+    h5: {
+      fontWeight: 600,
+    },
+    h6: {
+      fontWeight: 600,
+    },
+  },
+  shape: {
+    borderRadius: 8,
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: 500,
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        },
+      },
     },
   },
 });
-
-// Protected route component
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <>{children}</>;
-};
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AuthProvider>
-        <Router>
-          <Navbar />
-          <Container maxWidth="lg" sx={{ mt: 4 }}>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/auth-callback" element={<AuthCallbackPage />} />
-              
-              {/* Protected routes */}
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/create-email" 
-                element={
-                  <ProtectedRoute>
-                    <CompanyFormPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/email-preview" 
-                element={
-                  <ProtectedRoute>
-                    <EmailPreviewPage />
-                  </ProtectedRoute>
-                } 
-              />
-              
-              {/* Fallback route */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Container>
-        </Router>
-      </AuthProvider>
+      <Router>
+        <Navbar />
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
+          <Routes>
+            {/* Main routes - Dashboard is now the landing page */}
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/create-email" element={<CompanyFormPage />} />
+            <Route path="/email-preview" element={<EmailPreviewPage />} />
+            
+            {/* Fallback route */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Container>
+      </Router>
     </ThemeProvider>
   );
 }

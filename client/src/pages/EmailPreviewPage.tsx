@@ -19,7 +19,6 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import EditIcon from '@mui/icons-material/Edit';
-import { useAuth } from '../contexts/AuthContext';
 
 interface LocationState {
   companyName: string;
@@ -42,7 +41,6 @@ const parseEmail = (content: string) => {
 const EmailPreviewPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { getAccessToken } = useAuth();
   const [loading, setLoading] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -57,7 +55,7 @@ const EmailPreviewPage: React.FC = () => {
   // If there's no state, redirect to the form
   useEffect(() => {
     if (!state) {
-      navigate('/dashboard');
+      navigate('/');
       return;
     }
     
@@ -103,23 +101,8 @@ const EmailPreviewPage: React.FC = () => {
     setLoading(true);
     
     try {
-      const token = getAccessToken();
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001'}/api/emails/send`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          to: recipientEmail,
-          subject: emailData.subject,
-          body: emailData.body,
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to send email');
-      }
+      // Simulate sending email
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       // Show success message
       setSnackbarSeverity('success');
@@ -128,7 +111,7 @@ const EmailPreviewPage: React.FC = () => {
       
       // Redirect to dashboard after a delay
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/');
       }, 2000);
     } catch (error) {
       console.error('Error sending email:', error);
@@ -146,9 +129,18 @@ const EmailPreviewPage: React.FC = () => {
   
   return (
     <Container maxWidth="md">
-      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
+      <Paper 
+        elevation={0} 
+        sx={{ 
+          p: 4, 
+          mt: 4, 
+          borderRadius: 2, 
+          border: '1px solid', 
+          borderColor: 'divider' 
+        }}
+      >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" component="h1">
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold' }}>
             Email Preview
           </Typography>
           <Button
@@ -163,24 +155,29 @@ const EmailPreviewPage: React.FC = () => {
         
         <Divider sx={{ mb: 3 }} />
         
-        <Typography variant="subtitle1" gutterBottom>
-          To: {recipientEmail}
-        </Typography>
-        
-        {isEditing ? (
-          <TextField
-            fullWidth
-            label="Subject"
-            value={emailData.subject}
-            onChange={handleSubjectChange}
-            margin="normal"
-            disabled={loading}
-          />
-        ) : (
-          <Typography variant="subtitle1" gutterBottom>
-            Subject: {emailData.subject}
+        <Box sx={{ mb: 3, p: 2, bgcolor: 'rgba(0, 0, 0, 0.03)', borderRadius: 1 }}>
+          <Typography variant="subtitle1" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+            <strong style={{ minWidth: '80px' }}>To:</strong> 
+            <span>{recipientEmail}</span>
           </Typography>
-        )}
+          
+          {isEditing ? (
+            <TextField
+              fullWidth
+              label="Subject"
+              value={emailData.subject}
+              onChange={handleSubjectChange}
+              margin="normal"
+              disabled={loading}
+              sx={{ mb: 2 }}
+            />
+          ) : (
+            <Typography variant="subtitle1" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+              <strong style={{ minWidth: '80px' }}>Subject:</strong> 
+              <span>{emailData.subject}</span>
+            </Typography>
+          )}
+        </Box>
         
         <Box sx={{ mt: 3, mb: 3 }}>
           {isEditing ? (
@@ -196,9 +193,9 @@ const EmailPreviewPage: React.FC = () => {
           ) : (
             <Paper 
               variant="outlined" 
-              sx={{ p: 3, maxHeight: '400px', overflow: 'auto' }}
+              sx={{ p: 3, maxHeight: '400px', overflow: 'auto', whiteSpace: 'pre-wrap' }}
             >
-              <div dangerouslySetInnerHTML={{ __html: emailData.body }} />
+              {emailData.body}
             </Paper>
           )}
         </Box>
@@ -206,10 +203,10 @@ const EmailPreviewPage: React.FC = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
           <Button 
             variant="outlined" 
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/')}
             disabled={loading}
           >
-            Cancel
+            Back to Dashboard
           </Button>
           <Button
             variant="contained"

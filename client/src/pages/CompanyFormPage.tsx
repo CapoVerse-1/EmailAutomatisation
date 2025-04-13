@@ -14,8 +14,9 @@ import {
   FormHelperText,
   CircularProgress,
   SelectChangeEvent,
+  Divider,
+  Alert,
 } from '@mui/material';
-import { useAuth } from '../contexts/AuthContext';
 
 interface FormData {
   companyName: string;
@@ -24,9 +25,32 @@ interface FormData {
   emailType: string;
 }
 
+// Sample email generation response
+const SAMPLE_EMAIL_RESPONSE = `Subject: Introducing Our Innovative Solutions to Enhance Your Business
+
+Dear [Recipient],
+
+I hope this email finds you well. I am reaching out from [Company Name] to introduce our services that I believe could significantly benefit your business operations.
+
+[Company Name] specializes in providing cutting-edge solutions tailored to help businesses like yours streamline processes, increase productivity, and achieve sustainable growth. Our team of experienced professionals works closely with clients to understand their unique needs and develop customized strategies.
+
+Some of our key offerings include:
+- Advanced analytics and reporting tools to provide actionable insights
+- Integrated workflow solutions to enhance team collaboration
+- Scalable infrastructure designed to grow with your business
+- Dedicated support and consulting to ensure optimal implementation
+
+I would welcome the opportunity to discuss how [Company Name] can address your specific challenges and contribute to your business success. Would you be available for a brief call next week to explore this further?
+
+Thank you for your time and consideration. I look forward to potentially working with you.
+
+Best regards,
+[Your Name]
+[Company Name]
+[Contact Information]`;
+
 const CompanyFormPage: React.FC = () => {
   const navigate = useNavigate();
-  const { getAccessToken } = useAuth();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [formData, setFormData] = useState<FormData>({
@@ -85,31 +109,14 @@ const CompanyFormPage: React.FC = () => {
     setLoading(true);
     
     try {
-      const token = getAccessToken();
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001'}/api/emails/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          companyName: formData.companyName,
-          companyDescription: formData.companyDescription,
-          emailType: formData.emailType,
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to generate email');
-      }
-      
-      const data = await response.json();
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Navigate to preview page with the form data and generated content
       navigate('/email-preview', { 
         state: { 
           ...formData, 
-          generatedContent: data.emailContent 
+          generatedContent: SAMPLE_EMAIL_RESPONSE.replace(/\[Company Name\]/g, formData.companyName)
         } 
       });
     } catch (error) {
@@ -122,10 +129,21 @@ const CompanyFormPage: React.FC = () => {
 
   return (
     <Container maxWidth="md">
-      <Paper elevation={3} sx={{ p: 4, mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
+      <Paper 
+        elevation={0} 
+        sx={{ 
+          p: 4, 
+          mt: 4, 
+          borderRadius: 2, 
+          border: '1px solid', 
+          borderColor: 'divider' 
+        }}
+      >
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
           Create Email Campaign
         </Typography>
+        
+        <Divider sx={{ mb: 3 }} />
         
         <Typography variant="body1" paragraph>
           Fill in the details below to generate a personalized marketing email.
@@ -144,6 +162,7 @@ const CompanyFormPage: React.FC = () => {
             error={!!errors.companyName}
             helperText={errors.companyName}
             disabled={loading}
+            sx={{ mb: 3 }}
           />
           
           <TextField
@@ -159,9 +178,10 @@ const CompanyFormPage: React.FC = () => {
             error={!!errors.recipientEmail}
             helperText={errors.recipientEmail}
             disabled={loading}
+            sx={{ mb: 3 }}
           />
           
-          <FormControl fullWidth margin="normal" disabled={loading}>
+          <FormControl fullWidth margin="normal" disabled={loading} sx={{ mb: 3 }}>
             <InputLabel id="email-type-label">Email Type</InputLabel>
             <Select
               labelId="email-type-label"
@@ -192,9 +212,18 @@ const CompanyFormPage: React.FC = () => {
             error={!!errors.companyDescription}
             helperText={errors.companyDescription || "Provide a detailed description of your company, products/services, and what makes you unique."}
             disabled={loading}
+            sx={{ mb: 4 }}
           />
           
-          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button
+              variant="outlined"
+              size="large"
+              disabled={loading}
+              onClick={() => navigate('/')}
+            >
+              Cancel
+            </Button>
             <Button
               type="submit"
               variant="contained"
