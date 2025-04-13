@@ -52,6 +52,11 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
 };
 
 /**
+ * Alias for authenticateToken to match the import name in routes
+ */
+export const authenticate = authenticateToken;
+
+/**
  * Middleware to refresh expired token
  */
 export const refreshToken = async (req: Request, res: Response) => {

@@ -7,6 +7,9 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import AuthCallbackPage from './pages/AuthCallbackPage';
+import DashboardPage from './pages/DashboardPage';
+import CompanyFormPage from './pages/CompanyFormPage';
+import EmailPreviewPage from './pages/EmailPreviewPage';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Create theme
@@ -36,14 +39,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-// Placeholder Dashboard
-const Dashboard = () => (
-  <Container sx={{ mt: 4 }}>
-    <h1>Dashboard</h1>
-    <p>This is the dashboard. Content will be added in the next phase.</p>
-  </Container>
-);
-
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -53,17 +48,39 @@ function App() {
           <Navbar />
           <Container maxWidth="lg" sx={{ mt: 4 }}>
             <Routes>
+              {/* Public routes */}
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/auth-callback" element={<AuthCallbackPage />} />
+              
+              {/* Protected routes */}
               <Route 
                 path="/dashboard" 
                 element={
                   <ProtectedRoute>
-                    <Dashboard />
+                    <DashboardPage />
                   </ProtectedRoute>
                 } 
               />
+              <Route 
+                path="/create-email" 
+                element={
+                  <ProtectedRoute>
+                    <CompanyFormPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/email-preview" 
+                element={
+                  <ProtectedRoute>
+                    <EmailPreviewPage />
+                  </ProtectedRoute>
+                } 
+              />
+              
+              {/* Fallback route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Container>
         </Router>
