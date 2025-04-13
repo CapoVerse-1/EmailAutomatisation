@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -29,6 +29,16 @@ interface LocationState {
   generatedContent: string;
 }
 
+// Parse subject and body from generated content
+const parseEmail = (content: string) => {
+  if (!content) return { subject: '', body: '' };
+  // Assuming first line is the subject
+  const lines = content.split('\n');
+  const subject = lines[0].replace('Subject:', '').trim();
+  const body = lines.slice(1).join('\n').trim();
+  return { subject, body };
+};
+
 const EmailPreviewPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -38,29 +48,29 @@ const EmailPreviewPage: React.FC = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success');
+  const [emailData, setEmailData] = useState({ subject: '', body: '' });
+  const [isEditing, setIsEditing] = useState(false);
   
   // Get location state with email data
   const state = location.state as LocationState;
   
   // If there's no state, redirect to the form
+  useEffect(() => {
+    if (!state) {
+      navigate('/dashboard');
+      return;
+    }
+    
+    const { generatedContent } = state;
+    setEmailData(parseEmail(generatedContent));
+  }, [state, navigate]);
+  
+  // If there's no state, return early
   if (!state) {
-    navigate('/dashboard');
     return null;
   }
   
-  const { companyName, recipientEmail, generatedContent } = state;
-  
-  // Parse subject and body from generated content
-  const parseEmail = (content: string) => {
-    // Assuming first line is the subject
-    const lines = content.split('\n');
-    const subject = lines[0].replace('Subject:', '').trim();
-    const body = lines.slice(1).join('\n').trim();
-    return { subject, body };
-  };
-  
-  const [emailData, setEmailData] = useState(() => parseEmail(generatedContent));
-  const [isEditing, setIsEditing] = useState(false);
+  const { recipientEmail } = state;
   
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
